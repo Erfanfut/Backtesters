@@ -41,17 +41,16 @@ class MLBacktester():
         split = int(len(self.data) * split_ratio)
         data = self.data.copy()
         data['direction'] = np.sign(data['returns'])
-        train_data = data.iloc[:split]
-        test_data = data.iloc[split:]
 
         self.feature_columns = []
         for lag in range(1,lags + 1):
             col = "lag{}".format(lag)
             data[col] = data["returns"].shift(lag)
-            train_data[col] = train_data["returns"].shift(lag)
-            test_data[col] = test_data["returns"].shift(lag)
             self.feature_columns.append(col)
+            
         data.dropna(inplace=True)
+        train_data = data.iloc[:split]
+        test_data = data.iloc[split:]
         train_data.dropna(inplace=True)
         test_data.dropna(inplace=True)
         self.train_data = train_data
